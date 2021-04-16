@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class WorkingSession : Descriptor
 {
+    public TMPro.TMP_InputField id;
+    public string previousValue;
+
     // Start is called before the first frame update
     new void Start()
     {

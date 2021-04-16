@@ -23,5 +23,7 @@ public class Participant : Descriptor
         base.removeDescriptor();
         LayoutRebuilder.ForceRebuildLayoutImmediate(gameObject.transform.parent as RectTransform);
         LayoutRebuilder.ForceRebuildLayoutImmediate(gameObject.transform.parent.parent as RectTransform);
+
+        //Problème de rafraichissement...
     }
 }

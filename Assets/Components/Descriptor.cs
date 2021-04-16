@@ -1,5 +1,5 @@
+using FYFY;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -88,16 +88,25 @@ public class Descriptor : MonoBehaviour
         
     }
 
+    private IEnumerator movingAnimation(int step)
+    {
+        while (gameObject.GetComponent<Animation>().IsPlaying("RemoveDescriptor"))
+            yield return null;
+        gameObject.transform.SetSiblingIndex(gameObject.transform.GetSiblingIndex() + step);
+        updateStateAndNeighbours();
+        gameObject.GetComponent<Animation>().Play("InsertDescriptor");
+    }
+
     public void moveUp()
     {
-        gameObject.transform.SetSiblingIndex(gameObject.transform.GetSiblingIndex()-1);
-        updateStateAndNeighbours();
+        gameObject.GetComponent<Animation>().Play("RemoveDescriptor");
+        StartCoroutine(movingAnimation(-1));
     }
 
     public void moveDown()
     {
-        gameObject.transform.SetSiblingIndex(gameObject.transform.GetSiblingIndex() + 1);
-        updateStateAndNeighbours();
+        gameObject.GetComponent<Animation>().Play("RemoveDescriptor");
+        StartCoroutine(movingAnimation(1));
     }
 
     public void copyDescriptor()
@@ -105,6 +114,7 @@ public class Descriptor : MonoBehaviour
         GameObject copy = Instantiate(gameObject);
         copy.transform.SetParent(gameObject.transform.parent);
         copy.transform.SetSiblingIndex(gameObject.transform.GetSiblingIndex() + 1);
+        GameObjectManager.bind(copy);
     }
 
     public void removeDescriptor()
@@ -117,6 +127,15 @@ public class Descriptor : MonoBehaviour
         // Vérifier si on retire le dernier descripteur déplacable et qu'il y a un précédent
         if (gameObject.transform.GetSiblingIndex() == gameObject.transform.parent.childCount - 1 && previousDescriptor != null)
             setDownState(previousDescriptor, false);
+        GameObjectManager.unbind(gameObject);
+        gameObject.GetComponent<Animation>().Play("RemoveDescriptor");
+        StartCoroutine(destroyDescriptor());
+    }
+
+    private IEnumerator destroyDescriptor()
+    {
+        while (gameObject.GetComponent<Animation>().IsPlaying("RemoveDescriptor"))
+            yield return null;
         Destroy(gameObject);
     }
 }
