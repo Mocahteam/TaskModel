@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7369088824102287352}
   - component: {fileID: 7369088824102287359}
   - component: {fileID: 7369088824102287358}
+  - component: {fileID: 2822263604633516068}
   m_Layer: 5
   m_Name: Down
   m_TagString: Untagged
@@ -132,6 +133,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &2822263604633516068
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7369088824102287356}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d801835c3c203e04faea7b3e26feb6c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: "D\xE9placer vers le bas"
 --- !u!1 &7369088824149549869
 GameObject:
   m_ObjectHideFlags: 0
@@ -1072,7 +1086,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7369088825286330783}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -1087,7 +1101,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 24}
+  m_SizeDelta: {x: 484.45, y: 24}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7369088825286330779
 CanvasRenderer:
@@ -1110,7 +1124,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.87081105, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.39215687}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1189,6 +1203,7 @@ GameObject:
   - component: {fileID: 7369088825467026455}
   - component: {fileID: 7369088825467026454}
   - component: {fileID: 7369088825467026453}
+  - component: {fileID: 5673401487891624002}
   m_Layer: 5
   m_Name: DeleteButton
   m_TagString: Untagged
@@ -1309,6 +1324,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &5673401487891624002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7369088825467026443}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d801835c3c203e04faea7b3e26feb6c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: Supprimer
 --- !u!1 &7369088825630426396
 GameObject:
   m_ObjectHideFlags: 0
@@ -1464,6 +1492,7 @@ GameObject:
   - component: {fileID: 7369088825676604757}
   - component: {fileID: 7369088825676604756}
   - component: {fileID: 7369088825676604747}
+  - component: {fileID: 3791171593153570081}
   m_Layer: 5
   m_Name: Up
   m_TagString: Untagged
@@ -1567,7 +1596,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 7369088825676604756}
   m_OnClick:
     m_PersistentCalls:
@@ -1584,6 +1613,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &3791171593153570081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7369088825676604745}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d801835c3c203e04faea7b3e26feb6c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: "D\xE9placer vers le haut"
 --- !u!1 &7369088825803924799
 GameObject:
   m_ObjectHideFlags: 0

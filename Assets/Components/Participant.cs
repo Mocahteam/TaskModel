@@ -16,14 +16,4 @@ public class Participant : Descriptor
     {
         
     }
-
-    new public void removeDescriptor()
-    {
-        Debug.Log("Participant removeDescriptor");
-        base.removeDescriptor();
-        LayoutRebuilder.ForceRebuildLayoutImmediate(gameObject.transform.parent as RectTransform);
-        LayoutRebuilder.ForceRebuildLayoutImmediate(gameObject.transform.parent.parent as RectTransform);
-
-        //Problème de rafraichissement...
-    }
 }

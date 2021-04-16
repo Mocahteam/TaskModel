@@ -1,3 +1,4 @@
+using FYFY;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +14,13 @@ public class Observation : Descriptor
     // Update is called once per frame
     void Update()
     {
-        
+
+    }
+
+    public void addEmptyDecision(GameObject prefab)
+    {
+        GameObject newDecision = Instantiate(prefab);
+        newDecision.transform.SetParent(transform);
+        GameObjectManager.bind(newDecision);
     }
 }

@@ -1,3 +1,4 @@
+using FYFY;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,5 +18,12 @@ public class WorkingSession : Descriptor
     void Update()
     {
         
+    }
+
+    public void addEmptyParticipant(GameObject prefab)
+    {
+        GameObject newParticipant = Instantiate(prefab);
+        newParticipant.transform.SetParent(transform);
+        GameObjectManager.bind(newParticipant);
     }
 }

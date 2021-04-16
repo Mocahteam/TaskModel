@@ -87,6 +87,7 @@ GameObject:
   - component: {fileID: 6723134188901638861}
   - component: {fileID: 6723134188901638862}
   - component: {fileID: 6723134188901638863}
+  - component: {fileID: 6038767488565447558}
   m_Layer: 5
   m_Name: CopyButton
   m_TagString: Untagged
@@ -207,6 +208,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &6038767488565447558
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6723134188901638849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d801835c3c203e04faea7b3e26feb6c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: Dupliquer
 --- !u!1 &6723134188962262926
 GameObject:
   m_ObjectHideFlags: 0
@@ -219,6 +233,7 @@ GameObject:
   - component: {fileID: 6723134188962262922}
   - component: {fileID: 6723134188962262923}
   - component: {fileID: 6723134188962262924}
+  - component: {fileID: 1160721628476182289}
   m_Layer: 5
   m_Name: Up
   m_TagString: Untagged
@@ -339,6 +354,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &1160721628476182289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6723134188962262926}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d801835c3c203e04faea7b3e26feb6c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: "D\xE9placer vers le haut"
 --- !u!1 &6723134188996580038
 GameObject:
   m_ObjectHideFlags: 0
@@ -1007,6 +1035,7 @@ GameObject:
   - component: {fileID: 6723134189654339977}
   - component: {fileID: 6723134189654339978}
   - component: {fileID: 6723134189654339979}
+  - component: {fileID: 8309405900694892174}
   m_Layer: 5
   m_Name: Down
   m_TagString: Untagged
@@ -1127,6 +1156,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &8309405900694892174
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6723134189654339981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d801835c3c203e04faea7b3e26feb6c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: "D\xE9placer vers le bas"
 --- !u!1 &6723134189719580220
 GameObject:
   m_ObjectHideFlags: 0
@@ -1289,7 +1331,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6723134189758103144}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -1305,7 +1347,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 24}
+  m_SizeDelta: {x: 502.3, y: 24}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6723134189758103188
 CanvasRenderer:
@@ -1429,7 +1471,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -15, y: 0}
+  m_AnchoredPosition: {x: -14.999985, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6723134189880719154
@@ -1607,6 +1649,7 @@ GameObject:
   - component: {fileID: 6723134190152733967}
   - component: {fileID: 6723134190152733965}
   - component: {fileID: 6723134190152733966}
+  - component: {fileID: 3859865450613842386}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -1730,6 +1773,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3859865450613842386
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6723134190152733952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d801835c3c203e04faea7b3e26feb6c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: "S\xE9lectionnez la sous-t\xE2che d\xE9taillant<br>la t\xE2che en cours de
+    description"
 --- !u!1 &6723134190264348902
 GameObject:
   m_ObjectHideFlags: 0
@@ -1742,6 +1799,7 @@ GameObject:
   - component: {fileID: 6723134190264348898}
   - component: {fileID: 6723134190264348899}
   - component: {fileID: 6723134190264348900}
+  - component: {fileID: 5745935599663065634}
   m_Layer: 5
   m_Name: DeleteButton
   m_TagString: Untagged
@@ -1862,6 +1920,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &5745935599663065634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6723134190264348902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d801835c3c203e04faea7b3e26feb6c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: Supprimer
 --- !u!1 &6723134190341994578
 GameObject:
   m_ObjectHideFlags: 0
