@@ -2,6 +2,7 @@ using FYFY;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class WorkingSession : Descriptor
 {
@@ -23,7 +24,14 @@ public class WorkingSession : Descriptor
     public void addEmptyParticipant(GameObject prefab)
     {
         GameObject newParticipant = Instantiate(prefab);
-        newParticipant.transform.SetParent(transform);
+        float newHeight = newParticipant.GetComponent<LayoutElement>().preferredHeight;
+        //increase containers height
+        RectTransform contentArea = transform.Find("Content").GetComponent<RectTransform>();
+        contentArea.sizeDelta = new Vector2(contentArea.rect.width, contentArea.rect.height + newHeight);
+        RectTransform workingSessionArea = GetComponent<RectTransform>();
+        workingSessionArea.sizeDelta = new Vector2(workingSessionArea.rect.width, workingSessionArea.rect.height + newHeight);
+        // bind GO to FYFY
         GameObjectManager.bind(newParticipant);
+        GameObjectManager.setGameObjectParent(newParticipant, transform.Find("Content").gameObject, true);
     }
 }

@@ -3811,7 +3811,6 @@ GameObject:
   - component: {fileID: 1596371684}
   - component: {fileID: 1596371683}
   - component: {fileID: 1596371682}
-  - component: {fileID: 1596371686}
   - component: {fileID: 1596371687}
   m_Layer: 0
   m_Name: Main_Loop
@@ -3862,10 +3861,6 @@ MonoBehaviour:
       Culture=neutral, PublicKeyToken=null
     _typeFullName: WorkingSessionManager
     _pause: 1
-  - _typeAssemblyQualifiedName: ObservationManager, Assembly-CSharp, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    _typeFullName: ObservationManager
-    _pause: 1
   - _typeAssemblyQualifiedName: ScenarioManager, Assembly-CSharp, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
     _typeFullName: ScenarioManager
@@ -3898,18 +3893,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1596371686
-MonoBehaviour:
-  m_ObjectHideFlags: 2
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1596371681}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7dc452ed06ebc046bb4e8aa82700126, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1596371687
 MonoBehaviour:
   m_ObjectHideFlags: 2

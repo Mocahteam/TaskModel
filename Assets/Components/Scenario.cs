@@ -40,7 +40,7 @@ public class Scenario : MonoBehaviour
     {
         public string id = "";
         public string objective = "";
-        public int complexity = 0;
+        public int complexity = -1;
         public List<string> artefacts = new List<string>();
         public List<RawObservation> observations = new List<RawObservation>();
         public Dictionary<int, RawWorkingSession> workingSessions = new Dictionary<int, RawWorkingSession>();

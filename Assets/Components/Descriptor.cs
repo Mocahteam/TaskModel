@@ -49,7 +49,7 @@ public class Descriptor : MonoBehaviour
             return null;
     }
 
-    private static void updateState(GameObject gameObject)
+    private static void updateMyMovingStates(GameObject gameObject)
     {
         // Par défaut on active les deux boutons
         setUpState(gameObject, true);
@@ -64,22 +64,22 @@ public class Descriptor : MonoBehaviour
             setDownState(gameObject, false);
     }
 
-    private void updateStateAndNeighbours()
+    private void updateMyAndNeighboursMovingStates()
     {
-        updateState(gameObject);
+        updateMyMovingStates(gameObject);
         GameObject nextDescriptor = getNextDescriptor(gameObject);
         if (nextDescriptor)
-            updateState(nextDescriptor);
+            updateMyMovingStates(nextDescriptor);
         GameObject previousDescriptor = getPreviousDescriptor(gameObject);
         if (previousDescriptor)
-            updateState(previousDescriptor);
+            updateMyMovingStates(previousDescriptor);
         LayoutRebuilder.ForceRebuildLayoutImmediate(gameObject.transform.parent as RectTransform);
     }
 
     // Start is called before the first frame update
     protected void Start()
     {
-        updateStateAndNeighbours();
+        updateMyAndNeighboursMovingStates();
     }
 
     // Update is called once per frame
@@ -93,7 +93,7 @@ public class Descriptor : MonoBehaviour
         while (gameObject.GetComponent<Animation>().IsPlaying("RemoveDescriptor"))
             yield return null;
         gameObject.transform.SetSiblingIndex(gameObject.transform.GetSiblingIndex() + step);
-        updateStateAndNeighbours();
+        updateMyAndNeighboursMovingStates();
         gameObject.GetComponent<Animation>().Play("InsertDescriptor");
     }
 
@@ -132,10 +132,17 @@ public class Descriptor : MonoBehaviour
         StartCoroutine(destroyDescriptor());
     }
 
+    // overrided in Participant and Decision
+    public virtual void resizeContainer()
+    {
+        
+    }
+
     private IEnumerator destroyDescriptor()
     {
         while (gameObject.GetComponent<Animation>().IsPlaying("RemoveDescriptor"))
             yield return null;
+        resizeContainer();
         Destroy(gameObject);
     }
 }

@@ -7,28 +7,19 @@ using System.Collections;
 public class WorkingSessionManager : FSystem {
 
 	private Family f_workingSession = FamilyManager.getFamily(new AnyOfComponents(typeof(WorkingSession)));
-    private Family f_participants = FamilyManager.getFamily(new AnyOfComponents(typeof(Participant)));
 
     public static WorkingSessionManager instance;
-
-    private Dictionary<int, Transform> participantId2contentAreaTr;
 
     public WorkingSessionManager()
     {
         if (Application.isPlaying)
         {
-            participantId2contentAreaTr = new Dictionary<int, Transform>();
 
             f_workingSession.addEntryCallback(onNewWorkingSession);
             f_workingSession.addExitCallback(delegate(int unused) { resynckWorkingSessionId(null); });
-            f_participants.addEntryCallback(onNewParticipant);
-            f_participants.addExitCallback(onParticipantRemoved);
 
             foreach (GameObject ws in f_workingSession)
                 ws.GetComponent<WorkingSession>().id.onEndEdit.AddListener(delegate (string inputText){ onEndEdit(ws, inputText); });
-
-            foreach (GameObject part in f_participants)
-                participantId2contentAreaTr.Add(part.GetInstanceID(), part.transform.parent.parent);
         }
         instance = this;
     }
@@ -89,28 +80,6 @@ public class WorkingSessionManager : FSystem {
             orderedGo.GetComponent<Animation>().Play("animationPulse");
             cpt++;
         }
-    }
-
-    private void onNewParticipant(GameObject go)
-    {
-        participantId2contentAreaTr.Add(go.GetInstanceID(), go.transform.parent.parent);
-    }
-
-    private void onParticipantRemoved (int gameObjectInstanceId)
-    {
-        if (participantId2contentAreaTr.ContainsKey(gameObjectInstanceId))
-        {
-            Transform contentArea = participantId2contentAreaTr[gameObjectInstanceId];
-            if (contentArea != null)
-                MainLoop.instance.StartCoroutine(delayForceRebuild(contentArea));
-        }
-
-    }
-
-    private IEnumerator delayForceRebuild(Transform go)
-    {
-        yield return new WaitForSeconds(0.5f);
-        LayoutRebuilder.ForceRebuildLayoutImmediate(go as RectTransform);
     }
 
     // Use this to update member variables when system pause. 

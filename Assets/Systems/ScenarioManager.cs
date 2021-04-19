@@ -63,6 +63,12 @@ public class ScenarioManager : FSystem {
                 // save objective
                 if (descriptor.GetType() == typeof(TaskObjective))
                     previousTask.objective = descUI.GetComponentInChildren<TMP_InputField>().text;
+                // save complexity
+                if (descriptor.GetType() == typeof(Complexity))
+                    previousTask.complexity = descUI.GetComponentInChildren<TMP_Dropdown>().value;
+                // save artefacts
+                if (descriptor.GetType() == typeof(Artefact))
+                    previousTask.artefacts.Add(descUI.GetComponentInChildren<TMP_InputField>().text);
                 GameObject.Destroy(descUI);
             }
         }
@@ -75,6 +81,18 @@ public class ScenarioManager : FSystem {
         // load objective
         GameObject taskObjective = addDescriptor(scenario.taskObjectivePrefab);
         taskObjective.GetComponentInChildren<TMP_InputField>().text = task.objective;
+        // load complexity
+        if (task.complexity != -1)
+        {
+            GameObject taskComplexity = addDescriptor(scenario.taskComplexityPrefab);
+            taskComplexity.GetComponentInChildren<TMP_Dropdown>().value = task.complexity;
+        }
+        // load artefacts
+        foreach (string artefact in task.artefacts)
+        {
+            GameObject taskArtefact = addDescriptor(scenario.taskArtefactPrefab);
+            taskArtefact.GetComponentInChildren<TMP_InputField>().text = artefact;
+        }
 
 
         // select this new task
