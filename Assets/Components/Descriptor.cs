@@ -145,4 +145,9 @@ public class Descriptor : MonoBehaviour
         resizeContainer();
         Destroy(gameObject);
     }
+
+    public void toggleDescriptor(bool state)
+    {
+        GameObjectManager.setGameObjectState(transform.Find("Content").gameObject, !state);
+    }
 }
