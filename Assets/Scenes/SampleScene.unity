@@ -1239,7 +1239,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d801835c3c203e04faea7b3e26feb6c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  text: "Ajouter une nouvelle t\xE2che<br>Non disponible pour le moment..."
+  text: "Ajouter une nouvelle t\xE2che"
 --- !u!1 &346876407
 GameObject:
   m_ObjectHideFlags: 0
@@ -3208,7 +3208,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d801835c3c203e04faea7b3e26feb6c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  text: "S\xE9lectionner la t\xE2che \xE0 modifier<br>Non disponible pour le moment..."
+  text: "S\xE9lectionner la t\xE2che \xE0 modifier"
 --- !u!1 &1108904505
 GameObject:
   m_ObjectHideFlags: 0
@@ -3245,7 +3245,9 @@ MonoBehaviour:
   taskComplexityPrefab: {fileID: 7369088825286330783, guid: 6b2497756c62eda40b09f95d89a8465e, type: 3}
   taskArtefactPrefab: {fileID: 1617759907712951147, guid: 66498a4a34f88e140a9acd757ce7c6f0, type: 3}
   taskObservationPrefab: {fileID: 9018102991538032034, guid: 412228244f7c8d34da24dbf2190de33d, type: 3}
+  taskDecisionPrefab: {fileID: 2191709042688879898, guid: 365ccfa38d52bcc43b57b555fb6be6cb, type: 3}
   taskWorkingSessionPrefab: {fileID: 3007304298812619570, guid: 5c3455db34b71e8448beaaadb267ce20, type: 3}
+  taskParticipantPrefab: {fileID: 8917577926921697415, guid: b1cf6636881b300419ff65fbaea32f4b, type: 3}
   taskCompetencyPrefab: {fileID: 948070256708567430, guid: 39360e2fff335f1419dcb3a46a22f5f6, type: 3}
   taskProductionPrefab: {fileID: 8422362019858371638, guid: b5eb7df2350eb344bb5700220041e17d, type: 3}
   taskAntecedentPrefab: {fileID: 1880803479837460353, guid: 88eccc1850215e343a283a6db3ef35ac, type: 3}

@@ -18,7 +18,12 @@ public class Observation : Descriptor
 
     }
 
-    public void addEmptyDecision(GameObject prefab)
+    public void addEmptyDecision(GameObject prefab) // used in Unity Inspector
+    {
+        addDecision(prefab);
+    }
+
+    public GameObject addDecision (GameObject prefab)
     {
         GameObject newDecision = Instantiate(prefab);
         float newHeight = newDecision.GetComponent<LayoutElement>().preferredHeight;
@@ -30,5 +35,6 @@ public class Observation : Descriptor
         // bind GO to FYFY
         GameObjectManager.bind(newDecision);
         GameObjectManager.setGameObjectParent(newDecision, transform.Find("Content").gameObject, true);
+        return newDecision;
     }
 }

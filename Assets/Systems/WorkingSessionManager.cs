@@ -27,16 +27,21 @@ public class WorkingSessionManager : FSystem {
     private void onNewWorkingSession(GameObject go)
     {
         int max = 0;
-        foreach (GameObject go_ws in f_workingSession)
-        {
-            int val;
-            if (int.TryParse(go_ws.GetComponent<WorkingSession>().id.text, out val))
-                if (val > max)
-                    max = val;
-        }
         WorkingSession ws = go.GetComponent<WorkingSession>();
-        ws.id.text = ""+(max + 1);
-        ws.previousValue = ws.id.text;
+        if (ws.id.text == "")
+        {
+            foreach (GameObject go_ws in f_workingSession)
+            {
+                int val;
+                if (int.TryParse(go_ws.GetComponent<WorkingSession>().id.text, out val))
+                    if (val > max)
+                        max = val;
+            }
+            ws.id.text = "" + (max + 1);
+            ws.previousValue = ws.id.text;
+        }
+        else
+            ws.previousValue = ws.id.text;
         ws.id.onEndEdit.AddListener(delegate (string inputText) { onEndEdit(go, inputText); });
     }
 

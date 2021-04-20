@@ -21,7 +21,12 @@ public class WorkingSession : Descriptor
         
     }
 
-    public void addEmptyParticipant(GameObject prefab)
+    public void addEmptyParticipant(GameObject prefab) // used in Unity Inspector
+    {
+        addParticipant(prefab);
+    }
+
+    public GameObject addParticipant(GameObject prefab)
     {
         GameObject newParticipant = Instantiate(prefab);
         float newHeight = newParticipant.GetComponent<LayoutElement>().preferredHeight;
@@ -33,5 +38,6 @@ public class WorkingSession : Descriptor
         // bind GO to FYFY
         GameObjectManager.bind(newParticipant);
         GameObjectManager.setGameObjectParent(newParticipant, transform.Find("Content").gameObject, true);
+        return newParticipant;
     }
 }

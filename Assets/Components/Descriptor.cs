@@ -35,10 +35,16 @@ public class Descriptor : MonoBehaviour
 
     private static GameObject getPreviousDescriptor (GameObject gameObject)
     {
-        if (gameObject.transform.GetSiblingIndex() < 3)
+        if (gameObject.transform.GetSiblingIndex() - 1 < 1)
             return null;
         else
-            return gameObject.transform.parent.GetChild(gameObject.transform.GetSiblingIndex() - 1).gameObject;
+        {
+            GameObject previousGO = gameObject.transform.parent.GetChild(gameObject.transform.GetSiblingIndex() - 1).gameObject;
+            if (getDeepChild(previousGO.transform, "Down") == null) // if previous Go doesn't contain Down button
+                return null;
+            else
+                return gameObject.transform.parent.GetChild(gameObject.transform.GetSiblingIndex() - 1).gameObject;
+        }
     }
 
     private static GameObject getNextDescriptor(GameObject gameObject)
@@ -54,8 +60,9 @@ public class Descriptor : MonoBehaviour
         // Par défaut on active les deux boutons
         setUpState(gameObject, true);
         setDownState(gameObject, true);
-        // si l'élément créé est le 3ème enfant (<=> premier déplacable)
-        if (gameObject.transform.GetSiblingIndex() == 2)
+        // si l'élément précédent ne contient pas de bouton "Down"
+        GameObject previousDescriptor = getPreviousDescriptor(gameObject);
+        if (previousDescriptor == null || getDeepChild(previousDescriptor.transform, "Down") == null)
             // désactiver le bouton Up
             setUpState(gameObject, false);
         // si l'élément créé est le dernier enfant (<=> dernier déplacable)
@@ -73,7 +80,6 @@ public class Descriptor : MonoBehaviour
         GameObject previousDescriptor = getPreviousDescriptor(gameObject);
         if (previousDescriptor)
             updateMyMovingStates(previousDescriptor);
-        LayoutRebuilder.ForceRebuildLayoutImmediate(gameObject.transform.parent as RectTransform);
     }
 
     // Start is called before the first frame update
@@ -156,9 +162,7 @@ public class Descriptor : MonoBehaviour
         {
             GameObjectManager.setGameObjectState(contentArea.gameObject, !state);
             RectTransform descriptorArea = transform as RectTransform;
-            Debug.Log(descriptorArea.gameObject.name+" " +descriptorArea.sizeDelta.x + " " + descriptorArea.sizeDelta.y);
             descriptorArea.sizeDelta = new Vector2(descriptorArea.rect.width, descriptorArea.rect.height + step*contentArea.rect.height);
-            Debug.Log(descriptorArea.sizeDelta.x + " " + descriptorArea.sizeDelta.y);
         }
     }
 }

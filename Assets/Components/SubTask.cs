@@ -1,9 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class SubTask : Descriptor
 {
+    void Awake()
+    {
+        TMP_Dropdown taskListUI = GameObject.Find("Dropdown_selectTask").GetComponent<TMP_Dropdown>();
+        // update list
+        GetComponentInChildren<TMP_Dropdown>().ClearOptions();
+        GetComponentInChildren<TMP_Dropdown>().AddOptions(taskListUI.options);
+    }
+
     // Start is called before the first frame update
     new void Start()
     {
