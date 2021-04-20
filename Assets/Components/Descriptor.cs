@@ -112,9 +112,11 @@ public class Descriptor : MonoBehaviour
     public void copyDescriptor()
     {
         GameObject copy = Instantiate(gameObject);
-        copy.transform.SetParent(gameObject.transform.parent);
+        copy.transform.SetParent(gameObject.transform.parent); // not using GameObjectManager.setGameObjectParent because we can't immediate set sibling
         copy.transform.SetSiblingIndex(gameObject.transform.GetSiblingIndex() + 1);
         GameObjectManager.bind(copy);
+        GameObjectManager.refresh(gameObject.transform.parent.gameObject); // but we ask Fyfy to synchronise parent to take into account the new child
+        
     }
 
     public void removeDescriptor()
@@ -148,6 +150,15 @@ public class Descriptor : MonoBehaviour
 
     public void toggleDescriptor(bool state)
     {
-        GameObjectManager.setGameObjectState(transform.Find("Content").gameObject, !state);
+        int step = state ? -1 : 1;
+        RectTransform contentArea = transform.Find("Content") as RectTransform;
+        if (contentArea)
+        {
+            GameObjectManager.setGameObjectState(contentArea.gameObject, !state);
+            RectTransform descriptorArea = transform as RectTransform;
+            Debug.Log(descriptorArea.gameObject.name+" " +descriptorArea.sizeDelta.x + " " + descriptorArea.sizeDelta.y);
+            descriptorArea.sizeDelta = new Vector2(descriptorArea.rect.width, descriptorArea.rect.height + step*contentArea.rect.height);
+            Debug.Log(descriptorArea.sizeDelta.x + " " + descriptorArea.sizeDelta.y);
+        }
     }
 }

@@ -32,8 +32,8 @@ public class ScenarioManager : FSystem {
     private GameObject addDescriptor(GameObject prefab)
     {
         GameObject newDescriptor = GameObject.Instantiate(prefab);
-        newDescriptor.transform.SetParent(scenario.contentUI.transform);
         GameObjectManager.bind(newDescriptor);
+        GameObjectManager.setGameObjectParent(newDescriptor, scenario.contentUI.transform.gameObject, true);
         return newDescriptor;
     }
 

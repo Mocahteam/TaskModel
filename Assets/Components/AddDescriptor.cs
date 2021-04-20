@@ -20,7 +20,7 @@ public class AddDescriptor : MonoBehaviour
     public void addDescriptor(GameObject prefab)
     {
         GameObject newDescriptor = Instantiate(prefab);
-        newDescriptor.transform.SetParent(transform);
         GameObjectManager.bind(newDescriptor);
+        GameObjectManager.setGameObjectParent(newDescriptor, transform.gameObject, true);
     }
 }
