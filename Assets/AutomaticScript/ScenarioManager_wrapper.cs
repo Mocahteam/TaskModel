@@ -9,6 +9,16 @@ public class ScenarioManager_wrapper : MonoBehaviour
 		this.hideFlags = HideFlags.HideInInspector; // Hide this component in Inspector
 	}
 
+	public void saveScenario(UnityEngine.GameObject UIError)
+	{
+		MainLoop.callAppropriateSystemMethod ("ScenarioManager", "saveScenario", UIError);
+	}
+
+	public void loadScenario()
+	{
+		MainLoop.callAppropriateSystemMethod ("ScenarioManager", "loadScenario", null);
+	}
+
 	public void addNewTask()
 	{
 		MainLoop.callAppropriateSystemMethod ("ScenarioManager", "addNewTask", null);

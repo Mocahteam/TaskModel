@@ -4,12 +4,20 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Collections;
 using TMPro;
+using System.Runtime.InteropServices;
 
 public class ScenarioManager : FSystem {
+
+    [DllImport("__Internal")]
+    private static extern void Save(string name, string content); // call javascript
+
+    [DllImport("__Internal")]
+    private static extern void ShowLoadingButton(); // call javascript
 
     public static ScenarioManager instance;
 
     private TMP_Dropdown taskListUI;
+    private TMP_InputField scenarioName;
     private int currentSelection;
 
 
@@ -19,14 +27,35 @@ public class ScenarioManager : FSystem {
     {
         if (Application.isPlaying)
         {
-            scenario = GameObject.Find("Scenario").GetComponent<Scenario>();
+            scenario = GameObject.Find("ScenarioLoader").GetComponent<Scenario>();
             taskListUI = GameObject.Find("Dropdown_selectTask").GetComponent<TMP_Dropdown>();
+            scenarioName = GameObject.Find("ScenarioName").GetComponent<TMP_InputField>();
             addNewTask();
             taskListUI.value = 0;
             currentSelection = 0;
             taskListUI.RefreshShownValue();
+            if (!Application.isEditor)
+                ShowLoadingButton();
         }
         instance = this;
+    }
+
+    public void saveScenario(GameObject UIError)
+    {
+        syncCurrentTask();
+        if (scenarioName.text == "")
+            GameObjectManager.setGameObjectState(UIError, true);
+        else
+        {
+            Debug.Log(JsonUtility.ToJson(scenario.rawScenario));
+            Save(scenarioName.text.EndsWith(".snr") ? scenarioName.text : scenarioName.text + ".snr", JsonUtility.ToJson(scenario.rawScenario));
+        }
+    }
+
+    public void loadScenario()
+    {
+        currentSelection = -1;
+        showTask(0);
     }
 
     private GameObject addDescriptor(GameObject prefab)
@@ -56,35 +85,32 @@ public class ScenarioManager : FSystem {
         string defaultId = "Tâche " + i;
 
         // add new task to scenario
-        scenario.scenario.Add(new Scenario.Task(defaultId));
+        scenario.rawScenario.tasks.Add(new Scenario.RawTask(defaultId));
         // add task to dropdown UI
         taskListUI.options.Add(new TMP_Dropdown.OptionData(defaultId));
         // show task
-        if (scenario.scenario.Count == 1)
-            showTask(scenario.scenario.Count - 1);
+        if (scenario.rawScenario.tasks.Count == 1)
+            showTask(scenario.rawScenario.tasks.Count - 1);
         else
-            taskListUI.value = scenario.scenario.Count - 1;
+            taskListUI.value = scenario.rawScenario.tasks.Count - 1;
         taskListUI.RefreshShownValue();
     }
 
     public void removeCurrentTask()
     {
-        if (currentSelection >= 0 && currentSelection < scenario.scenario.Count)
+        if (currentSelection >= 0 && currentSelection < scenario.rawScenario.tasks.Count)
         {
-            scenario.scenario.RemoveAt(currentSelection);
+            scenario.rawScenario.tasks.RemoveAt(currentSelection);
             // update tasks that depends on this removed task
-            foreach (Scenario.Task task in scenario.scenario)
+            foreach (Scenario.RawTask task in scenario.rawScenario.tasks)
             {
-                for (int i = task.descriptors.Count - 1; i >= 0; i--)
-                {
-                    Scenario.RawDescriptor descriptor = task.descriptors[i];
-                    if (descriptor.GetType() == typeof(Scenario.RawAntecedent))
-                        if ((descriptor as Scenario.RawAntecedent).antecedent == currentSelection)
-                            task.descriptors.RemoveAt(i);
-                    if (descriptor.GetType() == typeof(Scenario.RawSubTask))
-                        if ((descriptor as Scenario.RawSubTask).subTask == currentSelection)
-                            task.descriptors.RemoveAt(i);
-                }
+                for (int i = task.rawAntecedents.Count - 1; i >= 0; i--)
+                    if (task.rawAntecedents[i].antecedent == currentSelection)
+                        task.rawAntecedents.RemoveAt(i);
+
+                for (int i = task.rawSubTasks.Count - 1; i >= 0; i--)
+                    if (task.rawSubTasks[i].subTask == currentSelection)
+                        task.rawSubTasks.RemoveAt(i);
             }
             taskListUI.options.RemoveAt(currentSelection);
         }
@@ -98,67 +124,73 @@ public class ScenarioManager : FSystem {
 
     }
 
+    private void syncCurrentTask()
+    {
+        Scenario.RawTask syncTask = new Scenario.RawTask(scenario.rawScenario.tasks[currentSelection].id);
+        // parse all childs
+        for (int i = 0; i < scenario.contentUI.transform.childCount; i++)
+        {
+            GameObject descUI = scenario.contentUI.transform.GetChild(i).gameObject;
+            Descriptor descriptor = descUI.GetComponent<Descriptor>();
+            // save name
+            if (descriptor.GetType() == typeof(TaskName))
+                syncTask.id = descUI.GetComponentInChildren<TMP_InputField>().text;
+            // save objective
+            if (descriptor.GetType() == typeof(TaskObjective))
+            {
+                syncTask.objective = descUI.GetComponentInChildren<TMP_InputField>(true).text;
+                syncTask.objectiveViewState = descUI.GetComponentInChildren<Toggle>().isOn;
+            }
+            // save complexity
+            if (descriptor.GetType() == typeof(Complexity))
+                syncTask.rawComplexities.Add(new Scenario.RawComplexity(i, descUI.GetComponentInChildren<TMP_Dropdown>().value));
+            // save artefacts
+            if (descriptor.GetType() == typeof(Artefact))
+                syncTask.rawArtefacts.Add(new Scenario.RawArtefact(i, descUI.GetComponentInChildren<TMP_InputField>().text));
+            // save observations
+            if (descriptor.GetType() == typeof(Observation))
+            {
+                Transform contentArea = descUI.transform.Find("Content");
+                Scenario.RawObservation newObservation = new Scenario.RawObservation(i, descUI.GetComponentInChildren<Toggle>().isOn, contentArea.GetChild(0).GetComponentInChildren<TMP_InputField>(true).text);
+                foreach (Decision decision in contentArea.GetComponentsInChildren<Decision>(true))
+                    newObservation.addRawDecision(decision.GetComponentInChildren<TMP_InputField>(true).text);
+                syncTask.rawObservations.Add(newObservation);
+            }
+            // save working session
+            if (descriptor.GetType() == typeof(WorkingSession))
+            {
+                Transform contentArea = descUI.transform.Find("Content");
+                Scenario.RawWorkingSession newWorkingSession = new Scenario.RawWorkingSession(i, descUI.GetComponentInChildren<Toggle>().isOn, descUI.transform.Find("Header").GetComponentInChildren<TMP_InputField>(true).text, contentArea.GetChild(0).GetComponentInChildren<TMP_InputField>(true).text, contentArea.GetChild(1).GetComponentInChildren<TMP_InputField>(true).text);
+                foreach (Participant participant in contentArea.GetComponentsInChildren<Participant>(true))
+                    newWorkingSession.addParticipant(participant.transform.GetChild(1).GetComponentInChildren<TMP_InputField>(true).text, participant.transform.GetChild(3).GetComponentInChildren<TMP_InputField>(true).text);
+                syncTask.rawWorkingSessions.Add(newWorkingSession);
+            }
+            // save competency
+            if (descriptor.GetType() == typeof(Competency))
+            {
+                Transform headerArea = descUI.transform.Find("Header");
+                syncTask.rawCompetencies.Add(new Scenario.RawCompetency(i, descUI.GetComponentInChildren<Toggle>().isOn, headerArea.GetChild(1).GetComponent<TMP_Dropdown>().value, headerArea.GetChild(3).GetComponent<TMP_Dropdown>().value, descUI.transform.Find("Content").GetComponentInChildren<TMP_InputField>(true).text));
+            }
+            // save production
+            if (descriptor.GetType() == typeof(Production))
+                syncTask.rawProductions.Add(new Scenario.RawProduction(i, descUI.GetComponentInChildren<Toggle>().isOn, descUI.GetComponentInChildren<TMP_InputField>(true).text));
+            // save antecedent
+            if (descriptor.GetType() == typeof(Antecedent))
+                syncTask.rawAntecedents.Add(new Scenario.RawAntecedent(i, descUI.GetComponentInChildren<TMP_Dropdown>(true).value));
+            // save subtask
+            if (descriptor.GetType() == typeof(SubTask))
+                syncTask.rawSubTasks.Add(new Scenario.RawSubTask(i, descUI.GetComponentInChildren<TMP_Dropdown>(true).value));
+        }
+
+        // override Task
+        scenario.rawScenario.tasks[currentSelection] = syncTask;
+    }
+
     public void showTask(int value)
     {
         // save previous task
         if (currentSelection >= 0 && currentSelection < taskListUI.options.Count) {
-            Scenario.Task previousTask = new Scenario.Task(scenario.scenario[currentSelection].id);
-            // parse all childs
-            for (int i = 0; i < scenario.contentUI.transform.childCount; i++)
-            {
-                GameObject descUI = scenario.contentUI.transform.GetChild(i).gameObject;
-                Descriptor descriptor = descUI.GetComponent<Descriptor>();
-                // save name
-                if (descriptor.GetType() == typeof(TaskName))
-                    previousTask.id = descUI.GetComponentInChildren<TMP_InputField>().text;
-                // save objective
-                if (descriptor.GetType() == typeof(TaskObjective))
-                {
-                    previousTask.objective = descUI.GetComponentInChildren<TMP_InputField>(true).text;
-                    previousTask.objectiveViewState = descUI.GetComponentInChildren<Toggle>().isOn;
-                }
-                // save complexity
-                if (descriptor.GetType() == typeof(Complexity))
-                    previousTask.descriptors.Add(new Scenario.RawComplexity(descUI.GetComponentInChildren<TMP_Dropdown>().value));
-                // save artefacts
-                if (descriptor.GetType() == typeof(Artefact))
-                    previousTask.descriptors.Add(new Scenario.RawArtefact(descUI.GetComponentInChildren<TMP_InputField>().text));
-                // save observations
-                if (descriptor.GetType() == typeof(Observation))
-                {
-                    Transform contentArea = descUI.transform.Find("Content");
-                    Scenario.RawObservation newObservation = new Scenario.RawObservation(descUI.GetComponentInChildren<Toggle>().isOn, contentArea.GetChild(0).GetComponentInChildren<TMP_InputField>(true).text);
-                    foreach (Decision decision in contentArea.GetComponentsInChildren<Decision>(true))
-                        newObservation.addRawDecision(decision.GetComponentInChildren<TMP_InputField>(true).text);
-                    previousTask.descriptors.Add(newObservation);
-                }
-                // save working session
-                if (descriptor.GetType() == typeof(WorkingSession))
-                {
-                    Transform contentArea = descUI.transform.Find("Content");
-                    Scenario.RawWorkingSession newWorkingSession = new Scenario.RawWorkingSession(descUI.GetComponentInChildren<Toggle>().isOn, descUI.transform.Find("Header").GetComponentInChildren<TMP_InputField>(true).text, contentArea.GetChild(0).GetComponentInChildren<TMP_InputField>(true).text, contentArea.GetChild(1).GetComponentInChildren<TMP_InputField>(true).text);
-                    foreach (Participant participant in contentArea.GetComponentsInChildren<Participant>(true))
-                        newWorkingSession.addParticipant(participant.transform.GetChild(1).GetComponentInChildren<TMP_InputField>(true).text, participant.transform.GetChild(3).GetComponentInChildren<TMP_InputField>(true).text);
-                    previousTask.descriptors.Add(newWorkingSession);
-                }
-                // save competency
-                if (descriptor.GetType() == typeof(Competency)) {
-                    Transform headerArea = descUI.transform.Find("Header");
-                    previousTask.descriptors.Add(new Scenario.RawCompetency(descUI.GetComponentInChildren<Toggle>().isOn, headerArea.GetChild(1).GetComponent<TMP_Dropdown>().value, headerArea.GetChild(3).GetComponent<TMP_Dropdown>().value, descUI.transform.Find("Content").GetComponentInChildren<TMP_InputField>(true).text));
-                }
-                // save production
-                if (descriptor.GetType() == typeof(Production))
-                    previousTask.descriptors.Add(new Scenario.RawProduction(descUI.GetComponentInChildren<Toggle>().isOn, descUI.GetComponentInChildren<TMP_InputField>(true).text));
-                // save antecedent
-                if (descriptor.GetType() == typeof(Antecedent))
-                    previousTask.descriptors.Add(new Scenario.RawAntecedent(descUI.GetComponentInChildren<TMP_Dropdown>(true).value));
-                // save subtask
-                if (descriptor.GetType() == typeof(SubTask))
-                    previousTask.descriptors.Add(new Scenario.RawSubTask(descUI.GetComponentInChildren<TMP_Dropdown>(true).value));
-            }
-
-            // override Task
-            scenario.scenario[currentSelection] = previousTask;
+            syncCurrentTask();
         }
         // remove all childs
         for (int i = 0; i < scenario.contentUI.transform.childCount; i++)
@@ -168,10 +200,10 @@ public class ScenarioManager : FSystem {
             GameObject.Destroy(child);
         }
 
-        if (value >= 0 && value < scenario.scenario.Count)
+        if (value >= 0 && value < scenario.rawScenario.tasks.Count)
         {
             // Load new selected task
-            Scenario.Task task = scenario.scenario[value];
+            Scenario.RawTask task = scenario.rawScenario.tasks[value];
             // load name
             GameObject taskName = addDescriptor(scenario.taskNamePrefab);
             taskName.GetComponentInChildren<TMP_InputField>().text = task.id;
@@ -179,82 +211,119 @@ public class ScenarioManager : FSystem {
             GameObject taskObjective = addDescriptor(scenario.taskObjectivePrefab);
             taskObjective.GetComponentInChildren<TMP_InputField>(true).text = task.objective;
             taskObjective.GetComponentInChildren<Toggle>().isOn = task.objectiveViewState;
+            
             // load other descriptors
-            foreach (Scenario.RawDescriptor descriptor in task.descriptors)
+            // find max id of descriptors
+            int max = -1;
+            foreach (Scenario.RawComplexity rawComplexity in task.rawComplexities)
+                if (rawComplexity.pos > max)
+                    max = rawComplexity.pos;
+            foreach (Scenario.RawArtefact rawArtefact in task.rawArtefacts)
+                if (rawArtefact.pos > max)
+                    max = rawArtefact.pos;
+            foreach (Scenario.RawObservation rawObservation in task.rawObservations)
+                if (rawObservation.pos > max)
+                    max = rawObservation.pos;
+            foreach (Scenario.RawWorkingSession rawWorkingSession in task.rawWorkingSessions)
+                if (rawWorkingSession.pos > max)
+                    max = rawWorkingSession.pos;
+            foreach (Scenario.RawCompetency rawCompetency in task.rawCompetencies)
+                if (rawCompetency.pos > max)
+                    max = rawCompetency.pos;
+            foreach (Scenario.RawProduction rawProduction in task.rawProductions)
+                if (rawProduction.pos > max)
+                    max = rawProduction.pos;
+            foreach (Scenario.RawAntecedent rawAntecedent in task.rawAntecedents)
+                if (rawAntecedent.pos > max)
+                    max = rawAntecedent.pos;
+            foreach (Scenario.RawSubTask rawSubTask in task.rawSubTasks)
+                if (rawSubTask.pos > max)
+                    max = rawSubTask.pos;
+            // create descripors in order
+            for (int i = 0; i <= max; i++)
             {
-                // load complexity
-                if (descriptor.GetType() == typeof(Scenario.RawComplexity))
-                {
-                    GameObject taskComplexity = addDescriptor(scenario.taskComplexityPrefab);
-                    taskComplexity.GetComponentInChildren<TMP_Dropdown>().value = (descriptor as Scenario.RawComplexity).complexity;
-                }
-                // load artefact
-                if (descriptor.GetType() == typeof(Scenario.RawArtefact))
-                {
-                    GameObject taskArtefact = addDescriptor(scenario.taskArtefactPrefab);
-                    taskArtefact.GetComponentInChildren<TMP_InputField>().text = (descriptor as Scenario.RawArtefact).artefact;
-                }
-                // load Observation
-                if (descriptor.GetType() == typeof(Scenario.RawObservation))
-                {
-                    GameObject taskObservation = addDescriptor(scenario.taskObservationPrefab);
-                    taskObservation.GetComponentInChildren<TMP_InputField>(true).text = (descriptor as Scenario.RawObservation).content;
-                    foreach (string decisionContent in (descriptor as Scenario.RawObservation).decisions)
+                // look for descriptor associated to this pos in all sets
+                // check complexity
+                foreach (Scenario.RawComplexity rawComplexity in task.rawComplexities)
+                    if (rawComplexity.pos == i)
                     {
-                        GameObject decision = taskObservation.GetComponent<Observation>().addDecision(scenario.taskDecisionPrefab);
-                        decision.GetComponentInChildren<TMP_InputField>(true).text = decisionContent;
+                        GameObject taskComplexity = addDescriptor(scenario.taskComplexityPrefab);
+                        taskComplexity.GetComponentInChildren<TMP_Dropdown>().value = rawComplexity.complexity;
                     }
-                    taskObservation.GetComponentInChildren<Toggle>().isOn = (descriptor as Scenario.RawObservation).viewState;
-                }
-                // load Working session
-                if (descriptor.GetType() == typeof(Scenario.RawWorkingSession))
-                {
-                    GameObject taskWorkingSession = addDescriptor(scenario.taskWorkingSessionPrefab);
-                    taskWorkingSession.transform.Find("Header").GetComponentInChildren<TMP_InputField>().text = (descriptor as Scenario.RawWorkingSession).id;
-                    Transform contentArea = taskWorkingSession.transform.Find("Content");
-                    contentArea.GetChild(0).GetComponentInChildren<TMP_InputField>(true).text = (descriptor as Scenario.RawWorkingSession).duration;
-                    contentArea.GetChild(1).GetComponentInChildren<TMP_InputField>(true).text = (descriptor as Scenario.RawWorkingSession).organisation;
-                    foreach (Scenario.RawParticipant participantContent in (descriptor as Scenario.RawWorkingSession).participants)
+                // check artefact
+                foreach (Scenario.RawArtefact rawArtefact in task.rawArtefacts)
+                    if (rawArtefact.pos == i)
                     {
-                        GameObject participant = taskWorkingSession.GetComponent<WorkingSession>().addParticipant(scenario.taskParticipantPrefab);
-                        participant.transform.GetChild(1).GetComponentInChildren<TMP_InputField>(true).text = participantContent.profil;
-                        participant.transform.GetChild(3).GetComponentInChildren<TMP_InputField>(true).text = participantContent.role;
+                        GameObject taskArtefact = addDescriptor(scenario.taskArtefactPrefab);
+                        taskArtefact.GetComponentInChildren<TMP_InputField>().text = rawArtefact.artefact;
                     }
-                    taskWorkingSession.GetComponentInChildren<Toggle>().isOn = (descriptor as Scenario.RawWorkingSession).viewState;
-                }
-                // load competency
-                if (descriptor.GetType() == typeof(Scenario.RawCompetency))
-                {
-                    GameObject taskCompetency = addDescriptor(scenario.taskCompetencyPrefab);
-                    Transform headerArea = taskCompetency.transform.Find("Header");
-                    headerArea.GetChild(1).GetComponent<TMP_Dropdown>().value = (descriptor as Scenario.RawCompetency).type;
-                    headerArea.GetChild(3).GetComponent<TMP_Dropdown>().value = (descriptor as Scenario.RawCompetency).id;
-                    taskCompetency.transform.Find("Content").GetComponentInChildren<TMP_InputField>(true).text = (descriptor as Scenario.RawCompetency).details;
-                    taskCompetency.GetComponentInChildren<Toggle>().isOn = (descriptor as Scenario.RawCompetency).viewState;
-                }
-                // load production
-                if (descriptor.GetType() == typeof(Scenario.RawProduction))
-                {
-                    GameObject taskProduction = addDescriptor(scenario.taskProductionPrefab);
-                    taskProduction.GetComponentInChildren<TMP_InputField>(true).text = (descriptor as Scenario.RawProduction).production;
-                    taskProduction.GetComponentInChildren<Toggle>().isOn = (descriptor as Scenario.RawProduction).viewState;
-                }
-                // load antecedent
-                if (descriptor.GetType() == typeof(Scenario.RawAntecedent))
-                {
-                    GameObject taskAntecedent = addDescriptor(scenario.taskAntecedentPrefab);
-                    TMP_Dropdown drop = taskAntecedent.GetComponentInChildren<TMP_Dropdown>(true);
-                    drop.value = (descriptor as Scenario.RawAntecedent).antecedent;
-                    drop.RefreshShownValue();
-                }
-                // load subtask
-                if (descriptor.GetType() == typeof(Scenario.RawSubTask))
-                {
-                    GameObject taskSubTask = addDescriptor(scenario.taskSubTaskPrefab);
-                    TMP_Dropdown drop = taskSubTask.GetComponentInChildren<TMP_Dropdown>(true);
-                    drop.value = (descriptor as Scenario.RawSubTask).subTask;
-                    drop.RefreshShownValue();
-                }
+                // check Observation
+                foreach (Scenario.RawObservation rawObservation in task.rawObservations)
+                    if (rawObservation.pos == i)
+                    {
+                        GameObject taskObservation = addDescriptor(scenario.taskObservationPrefab);
+                        taskObservation.GetComponentInChildren<TMP_InputField>(true).text = rawObservation.content;
+                        foreach (string decisionContent in rawObservation.decisions)
+                        {
+                            GameObject decision = taskObservation.GetComponent<Observation>().addDecision(scenario.taskDecisionPrefab);
+                            decision.GetComponentInChildren<TMP_InputField>(true).text = decisionContent;
+                        }
+                        taskObservation.GetComponentInChildren<Toggle>().isOn = rawObservation.viewState;
+                    }
+                // check Working session
+                foreach (Scenario.RawWorkingSession rawWorkingSession in task.rawWorkingSessions)
+                    if (rawWorkingSession.pos == i)
+                    {
+                        GameObject taskWorkingSession = addDescriptor(scenario.taskWorkingSessionPrefab);
+                        taskWorkingSession.transform.Find("Header").GetComponentInChildren<TMP_InputField>().text = rawWorkingSession.id;
+                        Transform contentArea = taskWorkingSession.transform.Find("Content");
+                        contentArea.GetChild(0).GetComponentInChildren<TMP_InputField>(true).text = rawWorkingSession.duration;
+                        contentArea.GetChild(1).GetComponentInChildren<TMP_InputField>(true).text = rawWorkingSession.organisation;
+                        foreach (Scenario.RawParticipant participantContent in rawWorkingSession.participants)
+                        {
+                            GameObject participant = taskWorkingSession.GetComponent<WorkingSession>().addParticipant(scenario.taskParticipantPrefab);
+                            participant.transform.GetChild(1).GetComponentInChildren<TMP_InputField>(true).text = participantContent.profil;
+                            participant.transform.GetChild(3).GetComponentInChildren<TMP_InputField>(true).text = participantContent.role;
+                        }
+                        taskWorkingSession.GetComponentInChildren<Toggle>().isOn = rawWorkingSession.viewState;
+                    }
+                // check competency
+                foreach (Scenario.RawCompetency rawCompetency in task.rawCompetencies)
+                    if (rawCompetency.pos == i)
+                    {
+                        GameObject taskCompetency = addDescriptor(scenario.taskCompetencyPrefab);
+                        Transform headerArea = taskCompetency.transform.Find("Header");
+                        headerArea.GetChild(1).GetComponent<TMP_Dropdown>().value = rawCompetency.type;
+                        headerArea.GetChild(3).GetComponent<TMP_Dropdown>().value = rawCompetency.id;
+                        taskCompetency.transform.Find("Content").GetComponentInChildren<TMP_InputField>(true).text = rawCompetency.details;
+                        taskCompetency.GetComponentInChildren<Toggle>().isOn = rawCompetency.viewState;
+                    }
+                // check production
+                foreach (Scenario.RawProduction rawProduction in task.rawProductions)
+                    if (rawProduction.pos == i)
+                    {
+                        GameObject taskProduction = addDescriptor(scenario.taskProductionPrefab);
+                        taskProduction.GetComponentInChildren<TMP_InputField>(true).text = rawProduction.production;
+                        taskProduction.GetComponentInChildren<Toggle>().isOn = rawProduction.viewState;
+                    }
+                // check antecedent
+                foreach (Scenario.RawAntecedent rawAntecedent in task.rawAntecedents)
+                    if (rawAntecedent.pos == i)
+                    {
+                        GameObject taskAntecedent = addDescriptor(scenario.taskAntecedentPrefab);
+                        TMP_Dropdown drop = taskAntecedent.GetComponentInChildren<TMP_Dropdown>(true);
+                        drop.value = rawAntecedent.antecedent;
+                        drop.RefreshShownValue();
+                    }
+                // check subtask
+                foreach (Scenario.RawSubTask rawSubTask in task.rawSubTasks)
+                    if (rawSubTask.pos > max)
+                    {
+                        GameObject taskSubTask = addDescriptor(scenario.taskSubTaskPrefab);
+                        TMP_Dropdown drop = taskSubTask.GetComponentInChildren<TMP_Dropdown>(true);
+                        drop.value = rawSubTask.subTask;
+                        drop.RefreshShownValue();
+                    }
             }
 
             // remember current selection
