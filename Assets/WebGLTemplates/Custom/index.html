@@ -107,8 +107,13 @@
 		  const fileSelector = document.getElementById('file-selector');
 		  fileSelector.addEventListener('change', (event) => {
 			const fileList = event.target.files;
-			console.log(fileList[0]);
-			unityInstance.SendMessage('ScenarioLoader', 'loadingFile',  JSON.stringify(fileList[0]));
+			var reader = new FileReader();
+			reader.onload = function(){
+			  const data = {name: fileList[0].name, content: reader.result};
+			  unityInstance.SendMessage('ScenarioLoader', 'loadingFile',  JSON.stringify(data));
+			  fileSelector.value = "";
+			};
+			reader.readAsText(fileList[0]);
 		  });
         }).catch((message) => {
           alert(message);

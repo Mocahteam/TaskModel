@@ -14,11 +14,6 @@ public class ScenarioManager_wrapper : MonoBehaviour
 		MainLoop.callAppropriateSystemMethod ("ScenarioManager", "saveScenario", UIError);
 	}
 
-	public void loadScenario()
-	{
-		MainLoop.callAppropriateSystemMethod ("ScenarioManager", "loadScenario", null);
-	}
-
 	public void addNewTask()
 	{
 		MainLoop.callAppropriateSystemMethod ("ScenarioManager", "addNewTask", null);

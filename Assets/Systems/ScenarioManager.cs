@@ -46,16 +46,22 @@ public class ScenarioManager : FSystem {
         if (scenarioName.text == "")
             GameObjectManager.setGameObjectState(UIError, true);
         else
-        {
-            Debug.Log(JsonUtility.ToJson(scenario.rawScenario));
             Save(scenarioName.text.EndsWith(".snr") ? scenarioName.text : scenarioName.text + ".snr", JsonUtility.ToJson(scenario.rawScenario));
-        }
     }
 
-    public void loadScenario()
+    public void loadScenario(string name, string content)
     {
+        // update scenario name UI
+        scenarioName.text = name.Substring(0, name.IndexOf(".snr"));
+        // update scenario content
+        scenario.rawScenario = JsonUtility.FromJson<Scenario.RawScenario>(content);
+        // update dropdown UI
+        taskListUI.ClearOptions();
+        foreach (Scenario.RawTask task in scenario.rawScenario.tasks)
+            taskListUI.options.Add(new TMP_Dropdown.OptionData(task.id));
         currentSelection = -1;
         showTask(0);
+        taskListUI.RefreshShownValue();
     }
 
     private GameObject addDescriptor(GameObject prefab)
