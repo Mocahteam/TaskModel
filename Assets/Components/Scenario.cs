@@ -154,6 +154,7 @@ public class Scenario : MonoBehaviour
         public string id = "";
         public string objective = "";
         public bool objectiveViewState = false; // false means visible
+        public GameObject linkedMovableUI = null;
         public List<RawComplexity> rawComplexities = new List<RawComplexity>(); 
         public List<RawArtefact> rawArtefacts = new List<RawArtefact>();
         public List<RawObservation> rawObservations = new List<RawObservation>();

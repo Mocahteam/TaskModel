@@ -24,6 +24,11 @@ public class ScenarioManager_wrapper : MonoBehaviour
 		MainLoop.callAppropriateSystemMethod ("ScenarioManager", "removeCurrentTask", null);
 	}
 
+	public void syncCurrentTask()
+	{
+		MainLoop.callAppropriateSystemMethod ("ScenarioManager", "syncCurrentTask", null);
+	}
+
 	public void showTask(System.Int32 value)
 	{
 		MainLoop.callAppropriateSystemMethod ("ScenarioManager", "showTask", value);
