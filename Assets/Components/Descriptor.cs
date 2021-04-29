@@ -1,6 +1,8 @@
 using FYFY;
 using System.Collections;
+using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class Descriptor : MonoBehaviour
@@ -86,6 +88,19 @@ public class Descriptor : MonoBehaviour
     protected void Start()
     {
         updateMyAndNeighboursMovingStates();
+        if (gameObject.GetComponentInChildren<TMP_InputField>() != null)
+            EventSystem.current.SetSelectedGameObject(gameObject.GetComponentInChildren<TMP_InputField>().gameObject);
+        if (gameObject.transform.GetSiblingIndex() == gameObject.transform.parent.childCount - 1)
+            StartCoroutine(MoveDown());
+    }
+
+    private IEnumerator MoveDown()
+    {
+        // wait two frames
+        yield return null;
+        yield return null;
+        if (gameObject.transform.parent.parent.parent.GetComponentInChildren<Scrollbar>() != null)
+            gameObject.transform.parent.parent.parent.GetComponentInChildren<Scrollbar>().value = 0;
     }
 
     // Update is called once per frame
