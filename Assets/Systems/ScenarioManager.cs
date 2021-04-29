@@ -19,6 +19,8 @@ public class ScenarioManager : FSystem {
     private TMP_Dropdown taskListUI;
     private TMP_InputField scenarioName;
     private int currentSelection;
+    private Button NewComplexityButton;
+    private Button NewProductionButton;
 
     private Scenario scenario;
 
@@ -29,6 +31,8 @@ public class ScenarioManager : FSystem {
             scenario = GameObject.Find("ScenarioLoader").GetComponent<Scenario>();
             taskListUI = GameObject.Find("Dropdown_selectTask").GetComponent<TMP_Dropdown>();
             scenarioName = GameObject.Find("ScenarioName").GetComponent<TMP_InputField>();
+            NewComplexityButton = GameObject.Find("NewComplexity").GetComponent<Button>();
+            NewProductionButton = GameObject.Find("NewProduction").GetComponent<Button>();
             addNewTask();
             taskListUI.value = 0;
             currentSelection = 0;
@@ -206,6 +210,8 @@ public class ScenarioManager : FSystem {
             GameObject.Destroy(child.gameObject);
         }
 
+        NewComplexityButton.interactable = true;
+        NewProductionButton.interactable = true;
         if (value >= 0 && value < scenario.rawScenario.tasks.Count)
         {
             // Load new selected task
@@ -255,6 +261,7 @@ public class ScenarioManager : FSystem {
                     {
                         GameObject taskComplexity = addDescriptor(scenario.taskComplexityPrefab);
                         taskComplexity.GetComponentInChildren<TMP_Dropdown>().value = rawComplexity.complexity;
+                        NewComplexityButton.interactable = false;
                     }
                 // check artefact
                 foreach (Scenario.RawArtefact rawArtefact in task.rawArtefacts)
@@ -311,6 +318,7 @@ public class ScenarioManager : FSystem {
                         GameObject taskProduction = addDescriptor(scenario.taskProductionPrefab);
                         taskProduction.GetComponentInChildren<TMP_InputField>(true).text = rawProduction.production;
                         taskProduction.GetComponentInChildren<Toggle>().isOn = rawProduction.viewState;
+                        NewProductionButton.interactable = false;
                     }
                 // check antecedent
                 foreach (Scenario.RawAntecedent rawAntecedent in task.rawAntecedents)
