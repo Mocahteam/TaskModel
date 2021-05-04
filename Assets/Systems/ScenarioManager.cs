@@ -14,6 +14,8 @@ public class ScenarioManager : FSystem {
     [DllImport("__Internal")]
     private static extern void ShowLoadingButton(); // call javascript
 
+    private Family f_linkDescriptors = FamilyManager.getFamily(new AnyOfComponents(typeof(Antecedent), typeof(SubTask)));
+
     public static ScenarioManager instance;
 
     private TMP_Dropdown taskListUI;
@@ -39,6 +41,9 @@ public class ScenarioManager : FSystem {
             taskListUI.RefreshShownValue();
             if (!Application.isEditor)
                 ShowLoadingButton();
+
+            f_linkDescriptors.addEntryCallback(onLinkAdded);
+            f_linkDescriptors.addExitCallback(checkLinkValidity);
         }
         instance = this;
     }
@@ -343,6 +348,45 @@ public class ScenarioManager : FSystem {
             // remember current selection
             currentSelection = value;
         }
+    }
+
+    private IEnumerator waitEndAnimAndWarn(GameObject link, string newText)
+    {
+        Animation anim = link.GetComponent<Animation>();
+        while (anim.isPlaying)
+            yield return null;
+        link.GetComponent<Image>().color = new Color(1, 0, 0, 0.75f);
+        TooltipContent tc = link.AddComponent<TooltipContent>(); // not using FYFY for this component
+        tc.text = newText;
+    }
+
+    public void checkLinkValidity(int unused)
+    {
+        // parse all existing links
+        foreach (GameObject link in f_linkDescriptors)
+        {
+            // default set color of first descriptor (already exist) : task name
+            link.GetComponent<Image>().color = link.transform.parent.GetChild(0).GetComponent<Image>().color;
+            foreach (TooltipContent tc in link.GetComponents<TooltipContent>())
+                GameObject.Destroy(tc); // this component is not managed by FYFY
+
+            TMP_Dropdown drop = link.GetComponentInChildren<TMP_Dropdown>();
+            // check subtask and antecedent validity
+            foreach (GameObject otherLink in f_linkDescriptors)
+                if (otherLink != link)
+                    if (drop.value == otherLink.GetComponentInChildren<TMP_Dropdown>().value)
+                        MainLoop.instance.StartCoroutine(waitEndAnimAndWarn(link, "Un autre lien (sous-tâche ou antécédent)\ncible également cette tâche...\nVeuillez vérifier vos liens !!!"));
+            // check that link doesn't target edited task
+            if (drop.value == taskListUI.value)
+                MainLoop.instance.StartCoroutine(waitEndAnimAndWarn(link, "Une tâche ne devrait pas être liée à elle même !!!"));
+        }
+    }
+
+    private void onLinkAdded(GameObject addedLink)
+    {
+        TMP_Dropdown drop = addedLink.GetComponentInChildren<TMP_Dropdown>();
+        drop.onValueChanged.AddListener(checkLinkValidity);
+        checkLinkValidity(-1);
     }
 
     // Use this to update member variables when system pause. 

@@ -34,4 +34,9 @@ public class ScenarioManager_wrapper : MonoBehaviour
 		MainLoop.callAppropriateSystemMethod ("ScenarioManager", "showTask", value);
 	}
 
+	public void checkLinkValidity(System.Int32 unused)
+	{
+		MainLoop.callAppropriateSystemMethod ("ScenarioManager", "checkLinkValidity", unused);
+	}
+
 }
