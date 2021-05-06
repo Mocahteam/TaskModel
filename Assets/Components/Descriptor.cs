@@ -137,7 +137,6 @@ public class Descriptor : MonoBehaviour
         copy.transform.SetSiblingIndex(gameObject.transform.GetSiblingIndex() + 1);
         GameObjectManager.bind(copy);
         GameObjectManager.refresh(gameObject.transform.parent.gameObject); // but we ask Fyfy to synchronise parent to take into account the new child
-        
     }
 
     public void removeDescriptor()

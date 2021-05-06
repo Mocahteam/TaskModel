@@ -2133,8 +2133,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 3007304298812619579}
-        m_TargetAssemblyTypeName: Descriptor, Assembly-CSharp
-        m_MethodName: copyDescriptor
+        m_TargetAssemblyTypeName: WorkingSession, Assembly-CSharp
+        m_MethodName: copyWorkingSession
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

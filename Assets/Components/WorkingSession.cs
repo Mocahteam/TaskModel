@@ -40,4 +40,12 @@ public class WorkingSession : Descriptor
         GameObjectManager.setGameObjectParent(newParticipant, transform.Find("Content").gameObject, true);
         return newParticipant;
     }
+
+    public void copyWorkingSession()
+    {
+        string saveId = id.text;
+        id.text = "";
+        copyDescriptor();
+        id.text = saveId;
+    }
 }
