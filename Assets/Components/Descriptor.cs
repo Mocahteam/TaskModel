@@ -7,6 +7,10 @@ using UnityEngine.UI;
 
 public class Descriptor : MonoBehaviour
 {
+    private float previousMouseY = 0;
+
+    protected float step;
+
     private static Transform getDeepChild (Transform transform, string name)
     {
         Transform child = transform.Find(name);
@@ -178,5 +182,26 @@ public class Descriptor : MonoBehaviour
             RectTransform descriptorArea = transform as RectTransform;
             descriptorArea.sizeDelta = new Vector2(descriptorArea.rect.width, descriptorArea.rect.height + step*contentArea.rect.height);
         }
+    }
+
+    public void initMousePos()
+    {
+        previousMouseY = Input.mousePosition.y;
+    }
+
+    public void resize(GameObject grasp)
+    {
+        RectTransform content_rt = (grasp.transform.parent as RectTransform);
+        step = previousMouseY - Input.mousePosition.y;
+
+        if (step <= 0 && content_rt.rect.height < 60)
+            step = 1;
+
+        // update content
+        content_rt.sizeDelta = new Vector2(content_rt.sizeDelta.x, content_rt.sizeDelta.y + step);
+        // update descriptor
+        (transform as RectTransform).sizeDelta = new Vector2((transform as RectTransform).sizeDelta.x, (transform as RectTransform).sizeDelta.y + step);
+
+        previousMouseY = Input.mousePosition.y;
     }
 }

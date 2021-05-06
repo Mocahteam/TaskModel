@@ -6,26 +6,13 @@
     <title>Unity WebGL Player | {{{ PRODUCT_NAME }}}</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
-	<style>
-		.button {
-		  background-color: #4CAF50;
-		  border: none;
-		  color: white;
-		  padding: 15px 32px;
-		  text-align: center;
-		  text-decoration: none;
-		  display: inline-block;
-		  font-size: 16px;
-		  margin: 4px 2px;
-		  cursor: pointer;
-		}
-	</style>
   </head>
   <body>
     <div id="unity-container" class="unity-desktop">
 	  <div>
-		<label id="proxyButton" style="visibility:hidden;" for="file-selector" class="button">Charger un scénario</label>
+		<label id="proxyLoadButton" style="visibility:hidden;" for="file-selector" class="loadButton">Charger un scénario</label>
 		<input id="file-selector" style="visibility:hidden;" type="file" accept=".snr">
+		<button id="pasteButton" style="visibility:hidden; float:right;" type="button" class="loadButton">Coller texte externe</button>
 	  </div>
       <canvas id="unity-canvas" width={{{ WIDTH }}} height={{{ HEIGHT }}}></canvas>
       <div id="unity-loading-bar">
@@ -110,10 +97,16 @@
 			var reader = new FileReader();
 			reader.onload = function(){
 			  const data = {name: fileList[0].name, content: reader.result};
-			  unityInstance.SendMessage('ScenarioLoader', 'loadingFile',  JSON.stringify(data));
+			  unityInstance.SendMessage('ScenarioLoader', 'loadingFile', JSON.stringify(data));
 			  fileSelector.value = "";
 			};
 			reader.readAsText(fileList[0]);
+		  });
+		  const pasteButton = document.getElementById('pasteButton');
+		  pasteButton.addEventListener("click", function() {
+		    navigator.clipboard.readText().then(clipText => {
+				unityInstance.SendMessage('ScenarioLoader', 'pasteData', clipText);
+			});
 		  });
         }).catch((message) => {
           alert(message);

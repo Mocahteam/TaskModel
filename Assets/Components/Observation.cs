@@ -37,4 +37,12 @@ public class Observation : Descriptor
         GameObjectManager.setGameObjectParent(newDecision, transform.Find("Content").gameObject, true);
         return newDecision;
     }
+
+    new void resize(GameObject grasp)
+    {
+        base.resize(grasp);
+
+        RectTransform content_rt = (grasp.transform.parent.parent as RectTransform);
+        content_rt.sizeDelta = new Vector2(content_rt.sizeDelta.x, content_rt.sizeDelta.y + step);
+    }
 }

@@ -13,8 +13,10 @@ mergeInto(LibraryManager.library, {
 		document.body.removeChild(element);
 	},
 	
-	ShowLoadingButton: function () {
-		var element = document.getElementById("proxyButton");
+	ShowHtmlButtons: function () {
+		var element = document.getElementById("proxyLoadButton");
+		element.style.visibility = 'visible';
+		element = document.getElementById("pasteButton");
 		element.style.visibility = 'visible';
 	}
   

@@ -12,7 +12,7 @@ public class ScenarioManager : FSystem {
     private static extern void Save(string name, string content); // call javascript
 
     [DllImport("__Internal")]
-    private static extern void ShowLoadingButton(); // call javascript
+    private static extern void ShowHtmlButtons(); // call javascript
 
     private Family f_linkDescriptors = FamilyManager.getFamily(new AnyOfComponents(typeof(Antecedent), typeof(SubTask)));
 
@@ -40,7 +40,7 @@ public class ScenarioManager : FSystem {
             currentSelection = 0;
             taskListUI.RefreshShownValue();
             if (!Application.isEditor)
-                ShowLoadingButton();
+                ShowHtmlButtons();
 
             f_linkDescriptors.addEntryCallback(onLinkAdded);
             f_linkDescriptors.addExitCallback(checkLinkValidity);
@@ -75,7 +75,7 @@ public class ScenarioManager : FSystem {
     private GameObject addDescriptor(GameObject prefab)
     {
         GameObject newDescriptor = GameObject.Instantiate(prefab);
-        newDescriptor.transform.SetParent(scenario.contentUI.transform);
+        newDescriptor.transform.SetParent(scenario.contentUI.transform, false);
         GameObjectManager.bind(newDescriptor);
         GameObjectManager.refresh(scenario.contentUI);
         return newDescriptor;
@@ -185,7 +185,7 @@ public class ScenarioManager : FSystem {
                 if (descriptor.GetType() == typeof(Competency))
                 {
                     Transform headerArea = descUI.Find("Header");
-                    syncTask.rawCompetencies.Add(new Scenario.RawCompetency(i, descUI.GetComponentInChildren<Toggle>().isOn, headerArea.GetChild(1).GetComponent<TMP_Dropdown>().value, headerArea.GetChild(3).GetComponent<TMP_Dropdown>().value, descUI.Find("Content").GetComponentInChildren<TMP_InputField>(true).text));
+                    syncTask.rawCompetencies.Add(new Scenario.RawCompetency(i, descUI.GetComponentInChildren<Toggle>().isOn, headerArea.GetChild(2).GetComponent<TMP_Dropdown>().value, headerArea.GetChild(4).GetComponent<TMP_Dropdown>().value, descUI.Find("Content").GetComponentInChildren<TMP_InputField>(true).text));
                 }
                 // save production
                 if (descriptor.GetType() == typeof(Production))
@@ -311,8 +311,8 @@ public class ScenarioManager : FSystem {
                     {
                         GameObject taskCompetency = addDescriptor(scenario.taskCompetencyPrefab);
                         Transform headerArea = taskCompetency.transform.Find("Header");
-                        headerArea.GetChild(1).GetComponent<TMP_Dropdown>().value = rawCompetency.type;
-                        headerArea.GetChild(3).GetComponent<TMP_Dropdown>().value = rawCompetency.id;
+                        headerArea.GetChild(2).GetComponent<TMP_Dropdown>().value = rawCompetency.type;
+                        headerArea.GetChild(4).GetComponent<TMP_Dropdown>().value = rawCompetency.id;
                         taskCompetency.transform.Find("Content").GetComponentInChildren<TMP_InputField>(true).text = rawCompetency.details;
                         taskCompetency.GetComponentInChildren<Toggle>().isOn = rawCompetency.viewState;
                     }
