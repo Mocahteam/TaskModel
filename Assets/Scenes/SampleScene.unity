@@ -1526,7 +1526,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d801835c3c203e04faea7b3e26feb6c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  text: "Ajouter une sous-t\xE2che"
+  text: "Ajouter un lien vers une sous-t\xE2che"
 --- !u!1 &267052026
 GameObject:
   m_ObjectHideFlags: 0
@@ -3721,7 +3721,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1653760040}
   m_Direction: 0
   m_Value: 0
-  m_Size: 1
+  m_Size: 0.9121172
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -4115,7 +4115,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d801835c3c203e04faea7b3e26feb6c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  text: "Ajouter le descripteur \"Complexit\xE9\""
+  text: "Sp\xE9cifier la complexit\xE9 de la t\xE2che"
 --- !u!1 &890018062
 GameObject:
   m_ObjectHideFlags: 0
@@ -5241,7 +5241,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 53}
   m_SizeDelta: {x: 751, y: 553}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1035629173
@@ -8472,7 +8472,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1241096752}
   m_Direction: 2
   m_Value: 0
-  m_Size: 1
+  m_Size: 0
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -8735,7 +8735,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d801835c3c203e04faea7b3e26feb6c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  text: "Ajouter une t\xE2che ant\xE9c\xE9dente"
+  text: "Ajouter un lien vers une t\xE2che ant\xE9c\xE9dente"
 --- !u!1 &2119524840
 GameObject:
   m_ObjectHideFlags: 0
