@@ -7273,6 +7273,7 @@ GameObject:
   - component: {fileID: 1596371682}
   - component: {fileID: 1596371687}
   - component: {fileID: 1596371686}
+  - component: {fileID: 1596371688}
   m_Layer: 0
   m_Name: Main_Loop
   m_TagString: Untagged
@@ -7330,6 +7331,10 @@ MonoBehaviour:
       PublicKeyToken=null
     _typeFullName: ZoomSystem
     _pause: 1
+  - _typeAssemblyQualifiedName: CursorSystem, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    _typeFullName: CursorSystem
+    _pause: 0
   _lateUpdateSystemDescriptions: []
   _forceUpdateInspector: 0
   _loadingState: 0
@@ -7380,6 +7385,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 27ab8152c3b298f40870a9412e4393e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1596371688
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1596371681}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88218c552dbe8554aafa92138bd07bb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1605868191
@@ -8485,7 +8502,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1241096752}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0
+  m_Size: 0.9041591
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
