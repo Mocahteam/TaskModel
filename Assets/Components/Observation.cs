@@ -26,7 +26,7 @@ public class Observation : Descriptor
     public GameObject addDecision (GameObject prefab)
     {
         GameObject newDecision = Instantiate(prefab);
-        float newHeight = newDecision.GetComponent<LayoutElement>().preferredHeight;
+        float newHeight = (newDecision.transform as RectTransform).rect.height;
         //increase containers height
         RectTransform contentArea = transform.Find("Content").GetComponent<RectTransform>();
         contentArea.sizeDelta = new Vector2(contentArea.rect.width, contentArea.rect.height + newHeight);

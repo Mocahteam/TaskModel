@@ -29,7 +29,7 @@ public class WorkingSession : Descriptor
     public GameObject addParticipant(GameObject prefab)
     {
         GameObject newParticipant = Instantiate(prefab);
-        float newHeight = newParticipant.GetComponent<LayoutElement>().preferredHeight;
+        float newHeight = (newParticipant.transform as RectTransform).rect.height;
         //increase containers height
         RectTransform contentArea = transform.Find("Content").GetComponent<RectTransform>();
         contentArea.sizeDelta = new Vector2(contentArea.rect.width, contentArea.rect.height + newHeight);

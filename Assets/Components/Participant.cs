@@ -21,7 +21,7 @@ public class Participant : Descriptor
     {
         base.copyDescriptor();
 
-        float newHeight = GetComponent<LayoutElement>().preferredHeight;
+        float newHeight = (transform as RectTransform).rect.height;
         //increase containers height
         RectTransform contentArea = transform.parent as RectTransform;
         contentArea.sizeDelta = new Vector2(contentArea.rect.width, contentArea.rect.height + newHeight);
@@ -31,7 +31,7 @@ public class Participant : Descriptor
 
     public override void resizeContainer()
     {
-        float oldHeight = GetComponent<LayoutElement>().preferredHeight;
+        float oldHeight = (transform as RectTransform).rect.height;
         //increase containers height
         RectTransform contentArea = transform.parent as RectTransform;
         contentArea.sizeDelta = new Vector2(contentArea.rect.width, contentArea.rect.height - oldHeight);
