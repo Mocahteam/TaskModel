@@ -1477,9 +1477,9 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
-  m_overflowMode: 0
+  m_overflowMode: 1
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
@@ -4071,9 +4071,9 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
-  m_overflowMode: 0
+  m_overflowMode: 1
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
@@ -4564,7 +4564,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cursorTexture: {fileID: 2800000, guid: c9fbbd917615c7744ae6d3e9f765c5ac, type: 3}
-  cursorMode: 0
   hotSpot: {x: 15, y: 16}
 --- !u!1 &8911655287150197116
 GameObject:
