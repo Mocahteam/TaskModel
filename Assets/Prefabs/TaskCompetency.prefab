@@ -1744,6 +1744,18 @@ MonoBehaviour:
       m_Image: {fileID: 0}
     - m_Text: "CRCN : Environnement num\xE9rique"
       m_Image: {fileID: 0}
+    - m_Text: "PIAF : D\xE9finir des abstractions / g\xE9n\xE9raliser"
+      m_Image: {fileID: 0}
+    - m_Text: "PIAF : Composer/d\xE9composer une s\xE9quence d\u2019actions"
+      m_Image: {fileID: 0}
+    - m_Text: "PIAF : Contr\xF4ler une s\xE9quence d\u2019actions"
+      m_Image: {fileID: 0}
+    - m_Text: "PIAF : \xC9valuer des objets ou des s\xE9quences d\u2019actions"
+      m_Image: {fileID: 0}
+    - m_Text: "PIAF : Traduire d\u2019une repr\xE9sentation \xE0 une autre"
+      m_Image: {fileID: 0}
+    - m_Text: "PIAF : Construire une s\xE9quence d\u2019actions de mani\xE8re it\xE9rative"
+      m_Image: {fileID: 0}
     - m_Text: Autre
       m_Image: {fileID: 0}
   m_OnValueChanged:
